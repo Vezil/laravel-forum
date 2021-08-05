@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use App\Http\Resources\ReplyResource;
-use App\Model\Reply;
+use App\Models\Reply;
+use App\Repositories\ReplyRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
@@ -19,9 +19,10 @@ class NewReplyNotification extends Notification
      *
      * @return void
      */
-    public function __construct(Reply $reply)
+    public function __construct(Reply $reply, ReplyRepository $replyRepository)
     {
         $this->reply = $reply;
+        $this->replyRepository = $replyRepository;
     }
 
     /**
@@ -56,7 +57,7 @@ class NewReplyNotification extends Notification
             'replyBy' => $this->reply->user->name,
             'question' => $this->reply->question->title,
             'path' => $this->reply->question->path,
-            'reply' => new ReplyResource($this->reply)
+            'reply' => $this->replyRepository->show($this->reply)
         ]);
     }
 }

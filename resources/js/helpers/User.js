@@ -7,17 +7,24 @@ class User {
             Token.payload(data.access_token);
 
             this.checkLoginData(data);
-        } catch (err) {
-            console.error(err);
+
+            return { isError: false, errorStatus: null };
+        } catch (error) {
+            console.error(error);
+
+            if (error.response && error.response.status) {
+                return { isError: true, errorStatus: error.response.status };
+            }
+
+            return { isError: true, errorStatus: null };
         }
     }
 
     checkLoginData(data) {
-        const { access_token } = data;
-        const { username } = data;
+        const { access_token, username, role } = data;
 
         if (Token.isValid(access_token)) {
-            AppStorage.store(username, access_token);
+            AppStorage.store(username, access_token, role);
             window.location = '/forum';
         }
     }
@@ -55,14 +62,18 @@ class User {
         }
     }
 
+    role() {
+        if (this.isLogged()) {
+            return AppStorage.getRole();
+        }
+    }
+
     own(id) {
         return this.id() === id;
     }
 
     isAdmin() {
-        //@TODO Roles
-
-        return this.id() === 1;
+        return this.role() === 'admin';
     }
 }
 

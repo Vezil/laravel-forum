@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\LikeEvent;
-use App\Model\Reply;
+use App\Models\Reply;
 
 class LikeController extends Controller
 {
@@ -16,7 +16,7 @@ class LikeController extends Controller
     public function likeIt(Reply $reply)
     {
         $reply->like()->create([
-            'user_id' => auth()->id(),
+            'user_id' => auth()->id()
         ]);
 
         broadcast(new LikeEvent($reply->id, 1))->toOthers();

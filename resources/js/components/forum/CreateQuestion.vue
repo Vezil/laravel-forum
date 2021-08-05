@@ -79,7 +79,7 @@ export default {
             try {
                 const { data } = await axios.get('/api/category');
 
-                this.categories = data.data;
+                this.categories = data;
             } catch (error) {
                 console.error(error);
             }

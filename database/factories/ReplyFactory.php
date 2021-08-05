@@ -2,9 +2,9 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Model\Question;
-use App\Model\Reply;
-use App\User;
+use App\Models\Question;
+use App\Models\Reply;
+use App\Models\User;
 use Faker\Generator as Faker;
 
 $factory->define(Reply::class, function (Faker $faker) {
@@ -15,6 +15,6 @@ $factory->define(Reply::class, function (Faker $faker) {
         },
         'user_id' => function () {
             return User::all()->random();
-        },
+        }
     ];
 });

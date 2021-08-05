@@ -7,9 +7,11 @@
                 type="text"
                 required
             />
-            <span v-if="errors.name.length" class="red--text">{{
-                errors.name[0]
-            }}</span>
+            <span
+                v-if="errors && errors.name && errors.name.length"
+                class="red--text"
+                >{{ errors.name[0] }}</span
+            >
 
             <v-text-field
                 v-model="form.email"
@@ -17,9 +19,9 @@
                 type="email"
                 required
             />
-            <span v-if="errors.email" class="red--text">{{
-                errors.email[0]
-            }}</span>
+            <span v-if="errors && errors.email" class="red--text">
+                {{ errors.email[0] }}
+            </span>
 
             <v-text-field
                 v-model="form.password"
@@ -27,7 +29,7 @@
                 type="password"
                 required
             />
-            <span v-if="errors.password" class="red--text">{{
+            <span v-if="errors && errors.password" class="red--text">{{
                 errors.password[0]
             }}</span>
 
@@ -54,7 +56,8 @@ export default {
                 name: null,
                 email: null,
                 password: null,
-                password_confirmation: null
+                password_confirmation: null,
+                verification_code: null
             },
             errors: {}
         };
@@ -68,10 +71,10 @@ export default {
                 await User.checkLoginData(data);
 
                 this.$router.push({ name: 'forum' });
-            } catch (err) {
-                this.errors = err.response.data.errors;
+            } catch (error) {
+                this.errors = error.response.data.errors;
 
-                console.error(err);
+                console.error(error);
             }
         }
     }

@@ -67,7 +67,8 @@ export default {
             const { data } = await axios.get(
                 `/api/question/${this.$route.params.slug}`
             );
-            this.question = data.data;
+
+            this.question = data;
         }
     }
 };

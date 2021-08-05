@@ -21,6 +21,10 @@
                 <v-btn text>Register</v-btn>
             </router-link>
         </v-form>
+
+        <div v-if="errorMessage" class="red--text mt-4">
+            {{ errorMessage }}
+        </div>
     </v-container>
 </template>
 <script>
@@ -30,15 +34,21 @@ export default {
             form: {
                 email: null,
                 password: null
-            }
+            },
+            errorMessage: ''
         };
     },
 
-    created() {},
-
     methods: {
-        login() {
-            User.login(this.form);
+        async login() {
+            const { isError, errorStatus } = await User.login(this.form);
+
+            if (isError) {
+                this.errorMessage =
+                    errorStatus === 401
+                        ? 'Email or password incorrect! Try again'
+                        : 'Something was wrong. Try again later';
+            }
         }
     }
 };

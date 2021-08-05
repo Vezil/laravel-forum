@@ -2,7 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Model\Category;
+use App\Models\Category;
 use Faker\Generator as Faker;
 
 $factory->define(Category::class, function (Faker $faker) {
@@ -10,6 +10,6 @@ $factory->define(Category::class, function (Faker $faker) {
 
     return [
         'name' => $word,
-        'slug' => str_slug($word),
+        'slug' => str_slug($word)
     ];
 });

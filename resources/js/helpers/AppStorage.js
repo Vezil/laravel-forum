@@ -7,6 +7,10 @@ class AppStorage {
         localStorage.setItem('username', username);
     }
 
+    storeRole(role) {
+        return localStorage.setItem('role', role);
+    }
+
     getToken() {
         return localStorage.getItem('token');
     }
@@ -15,14 +19,20 @@ class AppStorage {
         return localStorage.getItem('username');
     }
 
-    store(username, token) {
+    getRole() {
+        return localStorage.getItem('role');
+    }
+
+    store(username, token, role) {
         this.storeToken(token);
         this.storeUsername(username);
+        this.storeRole(role);
     }
 
     clearStore() {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
+        localStorage.removeItem('role');
     }
 }
 

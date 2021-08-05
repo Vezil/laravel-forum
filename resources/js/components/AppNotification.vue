@@ -8,6 +8,7 @@
                     :color="notificationsLength ? 'red' : 'gray'"
                     v-bind="attrs"
                     v-on="on"
+                    :disabled="!notificationsLength"
                 >
                     <v-icon>add_alert</v-icon>
                     <span
@@ -18,6 +19,7 @@
                     </span>
                 </v-btn>
             </template>
+
             <v-list>
                 <v-list-item
                     v-for="(notification, index) in notifications"
@@ -77,7 +79,7 @@ export default {
     methods: {
         async getNotifications() {
             try {
-                const { data } = await axios.get('api/notifications');
+                const { data } = await axios.get('/api/notifications');
 
                 this.notifications = data.unreadNotifications;
                 this.readNotifications = data.readNotifications;

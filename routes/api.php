@@ -9,13 +9,13 @@ Route::apiResource('/question/{question}/reply', 'ReplyController');
 Route::post('/like/{reply}', 'LikeController@likeIt');
 Route::delete('/like/{reply}', 'LikeController@unlikeIt');
 
-Route::get('notifications', 'NotificationController@index');
-Route::post('notifications/mark-as-read', 'NotificationController@markAsRead');
+Route::get('/notifications', 'NotificationController@index');
+Route::post('/notifications/mark-as-read', 'NotificationController@markAsRead');
 
 Route::group([
 
     'middleware' => 'api',
-    'prefix' => 'auth',
+    'prefix' => 'auth'
 
 ], function ($router) {
 
@@ -24,5 +24,6 @@ Route::group([
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
+    Route::post('verify', 'AuthController@verify');
 
 });

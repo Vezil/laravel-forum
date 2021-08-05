@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+    mysql:
+        image: mariadb:10
+        container_name: mysql.todo.docker
+        stdin_open: true
+        tty: true
+        networks:
+            - global
+        env_file:
+            - ./docker/mysql/config.env
+        volumes:
+            - ~/data/mysql.todo.docker:/var/lib/mysql
+        ports:
+            - 127.0.0.1:3389:3306
+        restart: always
+
+    php:
+        container_name: php.todo.docker
+        build:
+            context: ./
+            dockerfile: ./docker/php/Dockerfile
+        networks:
+            - global
+        stdin_open: true
+        tty: true
+        volumes:
+            - ./:/app:cached
+        links:
+            - mysql
+        restart: always
+
+    nginx:
+        container_name: nginx.todo.docker
+        build:
+            context: ./
+            dockerfile: ./docker/nginx/Dockerfile
+        networks:
+            - global
+        stdin_open: true
+        tty: true
+        labels:
+            traefik.frontend.rule: 'Host:{subdomain}.todo.test,todo.test'
+        volumes:
+            - ./:/app:cached
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:cached
+        links:
+            - php
+        restart: always
+
+networks:
+    global:
+        external: true

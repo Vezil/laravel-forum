@@ -2,22 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\NotificationResource;
+use App\Interfaces\Resources\NotificationRepositoryInterface;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
 
-    public function __construct()
+    public function __construct(NotificationRepositoryInterface $notificationRepository)
     {
         $this->middleware('JWT');
+
+        $this->notificationRepository = $notificationRepository;
+
     }
 
     public function index()
     {
+        $readNotifications = auth()->user()->readNotifications;
+        $unreadNotifications = auth()->user()->unreadNotifications;
+
         return [
-            'readNotifications' => NotificationResource::collection(auth()->user()->readNotifications),
-            'unreadNotifications' => NotificationResource::collection(auth()->user()->unreadNotifications)
+            'readNotifications' => $this->notificationRepository->index($readNotifications),
+            'unreadNotifications' => $this->notificationRepository->index($unreadNotifications)
         ];
     }
 

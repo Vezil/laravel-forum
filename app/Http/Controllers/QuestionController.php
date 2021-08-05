@@ -3,34 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\QuestionRequest;
-use App\Http\Resources\QuestionResource;
-use App\Model\Question;
+use App\Interfaces\Resources\QuestionRepositoryInterface;
+use App\Models\Question;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class QuestionController extends Controller
 {
-    public function __construct()
+    public function __construct(QuestionRepositoryInterface $questionRepository)
     {
         $this->middleware('JWT', ['except' => ['index']]);
+
+        $this->questionRepository = $questionRepository;
     }
 
     public function index()
     {
-        return QuestionResource::collection(Question::latest()->paginate(10));
+        return $this->questionRepository->index();
     }
 
     public function store(QuestionRequest $request)
     {
-
         $question = auth()->user()->questions()->create($request->all());
 
-        return response(new QuestionResource($question), Response::HTTP_CREATED);
+        $formattedQuestion = $this->questionRepository->toArray($question);
+
+        return response($formattedQuestion, Response::HTTP_CREATED);
     }
 
     public function show(Question $question)
     {
-        return new QuestionResource($question);
+        return $this->questionRepository->show($question);
     }
 
     public function update(Request $request, Question $question)

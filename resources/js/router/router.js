@@ -8,6 +8,7 @@ import Logout from '../components/login/Logout';
 import Read from '../components/forum/Read';
 import CreateQuestion from '../components/forum/CreateQuestion';
 import CreateCategory from '../components/category/CreateCategory';
+import VerifyAccount from '../components/account/VerifyAccount';
 
 Vue.use(VueRouter);
 
@@ -46,7 +47,8 @@ const routes = [
         beforeEnter: (to, from, next) => verifyAdmin(to, from, next)
     },
     { path: '/ask', component: CreateQuestion },
-    { path: '/question/:slug', component: Read, name: 'read' }
+    { path: '/question/:slug', component: Read, name: 'read' },
+    { path: '/account/verify', component: VerifyAccount, name: 'verifyAccount' }
 ];
 
 const router = new VueRouter({

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SignupRequest;
-use App\User;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -23,7 +25,9 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if ($token = JWTAuth::attempt($credentials)) {
+        $token = JWTAuth::attempt($credentials);
+
+        if ($token) {
             return $this->respondWithToken($token);
         }
 
@@ -32,7 +36,20 @@ class AuthController extends Controller
 
     public function signup(SignupRequest $request)
     {
-        User::create($request->all());
+
+        $userRole = Role::where('name', 'user')->first();
+
+        $user = User::create($request->all());
+
+        $user->roles()->attach($userRole);
+
+        $userEmail = $request->all()['email'];
+
+        $verification_code = Str::uuid()->toString();
+
+        User::where('email', $userEmail)->update(['verification_code' => $verification_code]);
+
+        MailController::sendSignupEmail($user->name, $user->email, $verification_code);
 
         return $this->login($request);
     }
@@ -83,6 +100,35 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60,
             'username' => auth()->user()->name,
+            'role' => auth()->user()->getRole(['user', 'admin'])->name
         ]);
+    }
+
+    /**
+     * Verify the user account (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verify()
+    {
+        $verified = false;
+        $alreadyVerified = false;
+        $code = request(['code']);
+
+        $user = User::where(['verification_code' => $code])->first();
+
+        if ($user) {
+            if ($user->email_verified_at) {
+                $alreadyVerified = true;
+            } else {
+                $user->email_verified_at = date("Y-m-d H:i:s");
+                $user->save();
+
+                $verified = true;
+            }
+
+        }
+
+        return response()->json(['verified' => $verified, 'alreadyVerified' => $alreadyVerified]);
     }
 }

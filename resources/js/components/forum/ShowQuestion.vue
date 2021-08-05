@@ -71,7 +71,7 @@ export default {
                 }
             });
 
-            Echo.channel(`create-reply-channel`).listen(
+            Echo.channel(`create-edit-reply-channel`).listen(
                 'CreateReplyEvent',
                 ({ questionId }) => {
                     if (questionId === this.question.id) {

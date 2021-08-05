@@ -12,5 +12,5 @@
  */
 
 Route::view('/', 'home');
-Route::view('/{any}', 'home');
-Route::view('/{any}/{anything}', 'home');
+Route::view('/{page}', 'home');
+Route::view('/{page}/{slug}', 'home');

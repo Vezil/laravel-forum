@@ -10,7 +10,7 @@
                 </question>
                 <div v-if="paginationLength" class="text-center mt-4">
                     <v-pagination
-                        v-model="meta.current_page"
+                        v-model="current_page"
                         :length="paginationLength"
                         @input="fetchQuestions"
                     ></v-pagination>
@@ -43,14 +43,16 @@ export default {
     data() {
         return {
             questions: [],
-            meta: {},
-            loading: false
+            loading: false,
+            total: 0,
+            per_page: 0,
+            current_page: 0
         };
     },
 
     computed: {
         paginationLength() {
-            return Math.ceil(this.meta.total / this.meta.per_page);
+            return Math.ceil(this.total / this.per_page);
         }
     },
 
@@ -63,10 +65,14 @@ export default {
             try {
                 this.loading = true;
 
-                const { data } = await axios.get(`/api/question?page=${page}`);
+                const { data: questions } = await axios.get(
+                    `/api/question?page=${page}`
+                );
 
-                this.questions = data.data;
-                this.meta = data.meta;
+                this.questions = questions.data;
+                this.total = questions.total;
+                this.per_page = questions.per_page;
+                this.current_page = questions.current_page;
             } catch (error) {
                 console.error(error);
             } finally {
@@ -76,4 +82,3 @@ export default {
     }
 };
 </script>
-<style></style>

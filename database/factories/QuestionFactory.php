@@ -2,12 +2,14 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Model\Category;
-use App\Model\Question;
+use App\Models\Category;
+use App\Models\Question;
+use App\Models\User;
 use Faker\Generator as Faker;
 
 $factory->define(Question::class, function (Faker $faker) {
     $title = $faker->sentence;
+
     return [
         'title' => $title,
         'slug' => str_slug($title),
@@ -16,7 +18,7 @@ $factory->define(Question::class, function (Faker $faker) {
             return Category::all()->random();
         },
         'user_id' => function () {
-            return \App\User::all()->random();
-        },
+            return User::all()->random();
+        }
     ];
 });
